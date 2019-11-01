@@ -190,104 +190,139 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                         ),
                       ),
                     ),
-                    AbsorbPointer(
-                      absorbing: task.assignedTo != null,
-                      child: ListTile(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => Container(
-                                child: ScrollConfiguration(
-                              behavior: CustomScrollBehaviour(),
-                              child: ListView(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      height: 50,
-                                      child: Center(
-                                        child: Text(
-                                          'Groups',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
+                    Card(
+                      margin: EdgeInsets.fromLTRB(5, 15, 5, 0),
+                      child: Column(
+                        children: <Widget>[
+                          ListTile(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => Container(
+                                  child: ScrollConfiguration(
+                                    behavior: CustomScrollBehaviour(),
+                                    child: ListView(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            height: 50,
+                                            child: Center(
+                                              child: Text(
+                                                'Groups',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                          AbsorbPointer(
+                            absorbing: task.assignedTo != null,
+                            child: ListTile(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) => Container(
+                                    child: ScrollConfiguration(
+                                      behavior: CustomScrollBehaviour(),
+                                      child: ListView(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              height: 50,
+                                              child: Center(
+                                                child: Text(
+                                                  'Groups',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
+                                        Container(
+                                          child: _buildGroupList(
+                                            database,
+                                          ),
+                                        ),
+                                      ],
+                                          Container(
+                                            child: _buildGroupList(database),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                  Container(
-                                    child: _buildGroupList(
-                                      database,
-                                    ),
-                                  ),
-                                ],
+                                );
+                              },
+                              leading: Icon(
+                                Icons.assignment_ind,
+                                color: Colors.indigo,
                               ),
-                            )),
-                          );
-                        },
-                        leading: Icon(
-                          Icons.assignment_ind,
-                          color: Colors.indigo,
-                        ),
-                        title: task.assignedTo != null
-                            ? Text('Assigned')
-                            : Text('Assign task'),
-                      ),
-                    ),
-                    Divider(
-                      indent: 70,
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        FontAwesomeIcons.bell,
-                        color: Colors.red[800],
-                      ),
-                      title: task.remindMe != null
-                          ? Text(
-                              '${DateFormat.MMMEd().format(task.remindMe).toString()},'
-                              ' ${DateFormat.jm().format(task.remindMe).toString()}')
-                          : Text('No reminder'),
-                      onTap: () async {
-                        await selectRemindDate();
-                        if (remindMeDateTime != null) {
-                          database.taskDao.updateTask(useFallBack
-                              ? widget.taskFallBack
-                                  .copyWith(remindMe: remindMeDateTime)
-                              : widget.task.task
-                                  .copyWith(remindMe: remindMeDateTime));
-                          widget.showNotification(
-                              title: 'Twix reminder!',
-                              task:
-                                  'You have to complete ${useFallBack ? widget.taskFallBack.name : widget.task.task.name}!',
-                              time: remindMeDateTime,
-                              payload: useFallBack
-                                  ? widget.taskFallBack.id
-                                  : widget.task.task.id);
-                        }
-                      },
-                    ),
-                    Divider(
-                      indent: 70,
-                    ),
-                    AbsorbPointer(
-                      absorbing: task.assignedTo != null,
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.calendar_today,
-                          color: Colors.teal,
-                        ),
-                        title: task.dueDate != null
-                            ? Text(DateFormat.yMMMEd()
-                                .format(task.dueDate)
-                                .toString())
-                            : Text('No due date'),
-                        onTap: () async {
-                          await selectDueDate();
-                          database.taskDao.updateTask(useFallBack
-                              ? widget.taskFallBack.copyWith(dueDate: dueDate)
-                              : widget.task.task.copyWith(dueDate: dueDate));
-                          setState(() {});
-                        },
+                              title: task.assignedTo != null
+                                  ? Text('Assigned')
+                                  : Text('Assign task'),
+                            ),
+                          ),
+                          Divider(
+                            indent: 70,
+                          ),
+                          ListTile(
+                            leading: Icon(
+                              FontAwesomeIcons.bell,
+                              color: Colors.red[800],
+                            ),
+                            title: task.remindMe != null
+                                ? Text(
+                                    '${DateFormat.MMMEd().format(task.remindMe).toString()},'
+                                    ' ${DateFormat.jm().format(task.remindMe).toString()}')
+                                : Text('No reminder'),
+                            onTap: () async {
+                              await selectRemindDate();
+                              if (remindMeDateTime != null) {
+                                database.taskDao.updateTask(useFallBack
+                                    ? widget.taskFallBack
+                                        .copyWith(remindMe: remindMeDateTime)
+                                    : widget.task.task
+                                        .copyWith(remindMe: remindMeDateTime));
+                                widget.showNotification(
+                                    title: 'Twix reminder!',
+                                    task:
+                                        'You have to complete ${useFallBack ? widget.taskFallBack.name : widget.task.task.name}!',
+                                    time: remindMeDateTime,
+                                    payload: useFallBack
+                                        ? widget.taskFallBack.id
+                                        : widget.task.task.id);
+                              }
+                            },
+                          ),
+                          Divider(
+                            indent: 70,
+                          ),
+                          AbsorbPointer(
+                            absorbing: task.assignedTo != null,
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.calendar_today,
+                                color: Colors.teal,
+                              ),
+                              title: task.dueDate != null
+                                  ? Text(DateFormat.yMMMEd()
+                                      .format(task.dueDate)
+                                      .toString())
+                                  : Text('No due date'),
+                              onTap: () async {
+                                await selectDueDate();
+                                database.taskDao.updateTask(useFallBack
+                                    ? widget.taskFallBack
+                                        .copyWith(dueDate: dueDate)
+                                    : widget.task.task
+                                        .copyWith(dueDate: dueDate));
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Container(
@@ -432,7 +467,8 @@ class GroupListTileState extends State<GroupListTile> {
                       boardId: widget.task.board.id,
                       isAssigned: true,
                       groupId: widget.group.id,
-                      notes: widget.task.task.notes);
+                    notes: widget.task.task.notes
+                  );
                   print(response.body);
                 },
               ),
