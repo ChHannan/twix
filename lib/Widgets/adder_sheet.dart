@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:twix/Database/database.dart';
 
 class AdderSheet extends StatefulWidget {
@@ -21,9 +20,7 @@ class _AdderSheetState extends State<AdderSheet> {
   Widget build(BuildContext context) {
     final TwixDB database = Provider.of<TwixDB>(context);
     return AnimatedPadding(
-      padding: MediaQuery
-          .of(context)
-          .viewInsets,
+      padding: MediaQuery.of(context).viewInsets,
       duration: Duration(milliseconds: 100),
       child: Container(
         child: Column(
@@ -33,7 +30,11 @@ class _AdderSheetState extends State<AdderSheet> {
               height: 60,
               child: Row(
                 children: <Widget>[
-                  Expanded(child: Icon(widget.iconData)),
+                  Expanded(
+                    child: Icon(
+                      widget.iconData,
+                    ),
+                  ),
                   Expanded(
                     flex: 6,
                     child: Padding(
@@ -48,10 +49,10 @@ class _AdderSheetState extends State<AdderSheet> {
                         decoration: InputDecoration(
                           hintText: '${widget.text} name',
                           border: InputBorder.none,
-                            counterText: '',
+                          counterText: '',
                         ),
                         autofocus: true,
-                        maxLength: 40 ,
+                        maxLength: 40,
                       ),
                     ),
                   ),
@@ -59,15 +60,19 @@ class _AdderSheetState extends State<AdderSheet> {
               ),
             ),
             Align(
-                alignment: Alignment.centerRight,
-                child: FlatButton(
-                    child: Text('Done',style: TextStyle(fontWeight: FontWeight.bold),),
-                    onPressed: () {
-                      if (textEditingController.text.isNotEmpty)
-                        widget.callBack(textEditingController.text, database);
-                      Navigator.pop(context);
-                    }
-                ))
+              alignment: Alignment.centerRight,
+              child: FlatButton(
+                child: Text(
+                  'Done',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  if (textEditingController.text.isNotEmpty)
+                    widget.callBack(textEditingController.text, database);
+                  Navigator.pop(context);
+                },
+              ),
+            ),
           ],
         ),
       ),

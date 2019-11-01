@@ -1,13 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
 import 'package:twix/Database/database.dart';
 import 'package:twix/Api/api.dart';
-
 import 'package:twix/Screens/task_screen.dart';
 import 'package:twix/Widgets/adder_sheet.dart';
 import 'package:twix/Widgets/board_list.dart';
@@ -23,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   bool isDivider = false;
   UserTableData loggedInUser;
   BoardTableData myTasksBoard;
@@ -32,19 +30,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   setAuthToken(TwixDB database) async {
     loggedInUser = await database.userDao.getLoggedInUser();
-    Api.setAuthToken(loggedInUser.token);
+    Api.setAuthToken(loggedInUser.token,);
 
     myTasksBoard = await database.boardDao.getMyTasksBoard();
     await Api.createBoard(
         id: myTasksBoard.id,
         name: 'My Tasks',
         isPersonal: true,
-        userId: loggedInUser.id);
+        userId: loggedInUser.id,);
   }
 
   populateAssignedToMe(TwixDB database) async {
     var response = await Api.viewAssignedTask();
-    var assignedTasks = jsonDecode(response.body);
+    var assignedTasks = jsonDecode(response.body,);
     for (var assignedTask in assignedTasks) {
       final String id = assignedTask['id'];
       final bool isDone = assignedTask['is_done'];
@@ -64,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (userId != loggedInUser.id)
         await database.userDao.insertUser(UserTableCompanion(
-            id: Value(userId), name: Value(userName), email: Value(userEmail)));
+            id: Value(userId,), name: Value(userName,), email: Value(userEmail,),),);
 
       if (!taskExists) {
         await database.taskDao.insertTask(TaskTableCompanion(
@@ -75,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
             remindMe: Value(taskRemindMe),
             boardId: Value(taskBoardId),
             notes: Value(taskNotes),
-            createdAt: Value(DateTime.now())));
+            createdAt: Value(DateTime.now(),),),);
 
         await database.assignedTaskDao.insertAssignedTask(
             AssignedTaskTableCompanion(
