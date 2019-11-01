@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -7,7 +6,6 @@ import 'package:twix/Database/database.dart';
 import 'package:twix/Database/DAOs/task_dao.dart';
 import 'package:twix/Database/DAOs/assigned_task_dao.dart';
 
-import 'package:twix/Screens/home_screen.dart';
 import 'package:twix/Widgets/build_task_card.dart';
 import 'package:twix/Widgets/custom_scroll_behaviour.dart';
 import 'package:twix/Widgets/task_adder_sheet.dart';
@@ -16,8 +14,10 @@ class TaskScreen extends StatefulWidget {
   final String boardId;
   final String action;
   final UserTableData loggedInUser;
+  final Function showNotification;
 
-  TaskScreen({this.boardId, this.action = 'normal', this.loggedInUser});
+  TaskScreen({this.boardId, this.action = 'normal', this.loggedInUser,
+              this.showNotification});
 
   @override
   _TaskScreenState createState() => _TaskScreenState();
@@ -35,11 +35,13 @@ class _TaskScreenState extends State<TaskScreen> {
   List allTasks;
   List<TaskWithBoard> tasks;
 
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  Function showNotification;
+
 
   @override
   void initState() {
     super.initState();
+    showNotification = widget.showNotification;
     getBoardName = widget.action == 'normal';
     isMyDay = widget.action == 'My Day';
     isAssignedToMe = widget.action == 'Assigned To Me';
@@ -48,37 +50,6 @@ class _TaskScreenState extends State<TaskScreen> {
       getBoardName = true;
       isMyTasks = true;
     }
-
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
-  }
-
-  Future showNotification({String title, String task, DateTime time}) async {
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'channel ID', 'channel Name', 'channel Description');
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    NotificationDetails platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.schedule(
-      0,
-      title,
-      task,
-      time,
-      platformChannelSpecifics,
-    );
-  }
-
-  Future onSelectNotification(String payload) async {
-    await Navigator.push(
-      context,
-      new MaterialPageRoute(builder: (context) => HomeScreen()),
-    );
   }
 
   Future<BoardTableData> getBoard(TwixDB database) async {
@@ -322,7 +293,10 @@ class _TaskScreenState extends State<TaskScreen> {
             itemCount: snapshot.data == null ? 0 : snapshot.data.length,
             itemBuilder: (_, index) {
               return BuildTaskCard(
-                  assignedTaskItem: tasks[index], database: database);
+                assignedTaskItem: tasks[index],
+                database: database,
+                showNotification: showNotification,
+              );
             },
           ),
         );
@@ -342,7 +316,8 @@ class _TaskScreenState extends State<TaskScreen> {
             itemCount: tasks.length,
             itemBuilder: (_, index) {
               final taskItem = tasks[index];
-              return BuildTaskCard(taskItem: taskItem, database: database);
+              return BuildTaskCard(taskItem: taskItem, database: database,
+              showNotification: showNotification,);
             },
           ),
         );

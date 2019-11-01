@@ -187,10 +187,11 @@ class _TaskAdderSheetState extends State<TaskAdderSheet> {
   void _insertTask(TwixDB database) async {
     today = DateTime.now();
     today = DateTime(today.year, today.month, today.day);
+    String uuid = Uuid().v4();
     if (textEditingController.text.isNotEmpty) {
       widget.action == 'normal'
           ? database.taskDao.insertTask(TaskTableCompanion(
-              id: Value(Uuid().v4()),
+              id: Value(uuid),
               name: Value(textEditingController.text),
               dueDate: Value(dueDate),
               myDayDate: Value(dueDate),
@@ -200,7 +201,7 @@ class _TaskAdderSheetState extends State<TaskAdderSheet> {
           : widget.action == 'normal MyTasks'
               ? database.taskDao.insertTask(
                   TaskTableCompanion(
-                    id: Value(Uuid().v4()),
+                    id: Value(uuid),
                     name: Value(textEditingController.text),
                     boardId: Value(widget.boardId),
                     dueDate: Value(dueDate),
@@ -211,7 +212,7 @@ class _TaskAdderSheetState extends State<TaskAdderSheet> {
                 )
               : database.taskDao.insertTask(
                   TaskTableCompanion(
-                    id: Value(Uuid().v4()),
+                    id: Value(uuid),
                     name: Value(textEditingController.text),
                     boardId: Value(widget.boardId),
                     dueDate: Value(dueDate),
@@ -227,7 +228,8 @@ class _TaskAdderSheetState extends State<TaskAdderSheet> {
         widget.showNotification(
             title: 'Twix reminder!',
             task: 'You have to complete ${textEditingController.text}!',
-            time: remindMeDateTime);
+            time: remindMeDateTime,
+            payload: uuid);
       }
     }
   }

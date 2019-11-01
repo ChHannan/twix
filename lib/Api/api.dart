@@ -22,6 +22,8 @@ class Api {
 
   static String _userDetail(String id) => '$_userView$id/';
 
+  static String _createDevice = '${_link}devices/';
+
   static const String _tokenView = '${_link}token/';
 
   static const String _groupView = '${_link}twix/group/';
@@ -75,6 +77,19 @@ class Api {
   }
 
   // Twix App
+
+  static Future<Response> createDevice(String name, String registrationId) {
+    return post(_createDevice,
+        body: jsonEncode({
+          'name': name,
+          'registration_id': registrationId,
+          'type': 'android'
+        }),
+        headers: {
+          HttpHeaders.authorizationHeader: _authToken,
+          HttpHeaders.contentTypeHeader: 'application/json'
+        });
+  }
 
   static Future<Response> createBoard(
       {String id, String name, String userId, bool isPersonal}) {

@@ -9,8 +9,13 @@ class BuildTaskCard extends StatefulWidget {
   final TaskWithBoard taskItem;
   final AssignedTaskWithUser assignedTaskItem;
   final TwixDB database;
+  final Function showNotification;
 
-  BuildTaskCard({this.taskItem, this.assignedTaskItem, this.database});
+  BuildTaskCard(
+      {this.taskItem,
+      this.assignedTaskItem,
+      this.database,
+      this.showNotification});
 
   @override
   _BuildTaskCardState createState() => _BuildTaskCardState();
@@ -43,6 +48,7 @@ class _BuildTaskCardState extends State<BuildTaskCard>
       task: widget.taskItem != null ? widget.taskItem : null,
       assignedTask:
           widget.assignedTaskItem != null ? widget.assignedTaskItem : null,
+      showNotification: widget.showNotification,
     );
     bool isDone = widget.taskItem == null
         ? widget.assignedTaskItem.task.isDone

@@ -12,8 +12,9 @@ import 'package:twix/Widgets/custom_scroll_behaviour.dart';
 class TaskDetailsScreen extends StatefulWidget {
   final TaskWithBoard task;
   final TaskTableData taskFallBack;
+  final Function showNotification;
 
-  TaskDetailsScreen({this.task, this.taskFallBack});
+  TaskDetailsScreen({this.task, this.taskFallBack, this.showNotification});
 
   @override
   _TaskDetailsScreenState createState() => _TaskDetailsScreenState();
@@ -22,6 +23,18 @@ class TaskDetailsScreen extends StatefulWidget {
 class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   bool useFallBack = false;
   bool shouldDisable = false;
+
+  DateTime now = DateTime.now();
+  DateTime today;
+  DateTime dueDate;
+
+  DateTime initialDate = DateTime.now();
+  TimeOfDay initialTime = TimeOfDay.now();
+
+  DateTime reminderDate;
+  TimeOfDay reminderTime;
+
+  DateTime remindMeDateTime;
 
   TextEditingController taskController;
 
@@ -117,16 +130,22 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           child: ListTile(
                             leading: task.isDone
                                 ? IconButton(
-                              onPressed: null,
+                                    onPressed: null,
                                     icon: Icon(
-                                    Icons.check_circle_outline,
-                                    color: Colors.green,
-                                  ))
+                                      Icons.check_circle_outline,
+                                      color: Colors.green,
+                                    ))
                                 : IconButton(
                                     onPressed: () {
                                       database.taskDao.updateTask(
-                                          task.copyWith(isDone: true));
-                                      setState(() {});
+                                          useFallBack
+                                              ? widget.taskFallBack
+                                              .copyWith(isDone: true)
+                                              : widget.task.task
+                                              .copyWith(isDone: true));
+                                      setState(() {
+                                        shouldDisable = true;
+                                      });
                                     },
                                     icon: Icon(
                                       FontAwesomeIcons.circle,
@@ -210,7 +229,24 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                     '${DateFormat.MMMEd().format(task.remindMe).toString()},'
                                     ' ${DateFormat.jm().format(task.remindMe).toString()}')
                                 : Text('No reminder'),
-                            onTap: () {},
+                            onTap: () async {
+                              await selectRemindDate();
+                              if (remindMeDateTime != null) {
+                                database.taskDao.updateTask(useFallBack
+                                    ? widget.taskFallBack
+                                        .copyWith(remindMe: remindMeDateTime)
+                                    : widget.task.task
+                                        .copyWith(remindMe: remindMeDateTime));
+                                widget.showNotification(
+                                    title: 'Twix reminder!',
+                                    task:
+                                        'You have to complete ${useFallBack ? widget.taskFallBack.name : widget.task.task.name}!',
+                                    time: remindMeDateTime,
+                                    payload: useFallBack
+                                        ? widget.taskFallBack.id
+                                        : widget.task.task.id);
+                              }
+                            },
                           ),
                           Divider(
                             indent: 70,
@@ -225,7 +261,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                     .format(task.dueDate)
                                     .toString())
                                 : Text('No due date'),
-                            onTap: () {},
+                            onTap: () async {
+                              await selectDueDate();
+                              database.taskDao.updateTask(useFallBack
+                                  ? widget.taskFallBack
+                                      .copyWith(dueDate: dueDate)
+                                  : widget.task.task
+                                      .copyWith(dueDate: dueDate));
+                            },
                           ),
                         ],
                       ),
@@ -282,6 +325,44 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             ),
           );
         });
+  }
+
+  Future selectDueDate() async {
+    var selected = await showDatePicker(
+        context: (context),
+        initialDate: initialDate,
+        firstDate: DateTime(2000, 1),
+        lastDate: DateTime(2050, 1));
+    if (selected != null && selected != dueDate)
+      setState(() {
+        dueDate = selected;
+        dueDate = DateTime(dueDate.year, dueDate.month, dueDate.day);
+      });
+  }
+
+  Future selectRemindDate() async {
+    var selected = await showDatePicker(
+        context: (context),
+        initialDate: initialDate,
+        firstDate: DateTime(2000, 1),
+        lastDate: DateTime(2050, 1));
+    if (selected != null && selected != reminderDate) {
+      reminderDate = selected;
+      await selectRemindTime();
+    }
+  }
+
+  Future selectRemindTime() async {
+    initialTime = TimeOfDay.now();
+    var selected =
+        await showTimePicker(context: context, initialTime: initialTime);
+    if (selected != null && selected != reminderTime) {
+      setState(() {
+        reminderTime = selected;
+        remindMeDateTime = DateTime(reminderDate.year, reminderDate.month,
+            reminderDate.day, reminderTime.hour, reminderTime.minute);
+      });
+    }
   }
 
   @override

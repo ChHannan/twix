@@ -13,8 +13,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class TaskCard extends StatefulWidget {
   final TaskWithBoard task;
   final AssignedTaskWithUser assignedTask;
+  final Function showNotification;
 
-  const TaskCard({Key key, this.task, this.assignedTask}) : super(key: key);
+  const TaskCard({Key key, this.task, this.assignedTask, this.showNotification})
+      : super(key: key);
 
   @override
   _TaskCardState createState() => _TaskCardState();
@@ -94,9 +96,9 @@ class _TaskCardState extends State<TaskCard>
             context,
             MaterialPageRoute(
               builder: (context) => TaskDetailsScreen(
-                task: widget.task,
-                taskFallBack: widget.assignedTask?.task,
-              ),
+                  task: widget.task,
+                  taskFallBack: widget.assignedTask?.task,
+                  showNotification: widget.showNotification),
             ),
           );
         },

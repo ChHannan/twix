@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'package:twix/Database/database.dart';
 import 'package:twix/Api/api.dart';
 import 'package:twix/Screens/task_screen.dart';
@@ -27,6 +31,66 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<BoardTableData> boards;
   List<GroupTableData> groups;
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  @override
+  void initState() {
+    super.initState();
+    firebaseCloudMessagingListeners();
+
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future onSelectNotification(String payload) async {
+    await Navigator.push(
+      context,
+      new MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
+  }
+
+  Future showNotification(
+      {String title, String task, DateTime time, String payload}) async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        'channel ID', 'channel Name', 'channel Description');
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.cancel(payload.hashCode);
+    await flutterLocalNotificationsPlugin.schedule(
+        payload.hashCode, title, task, time, platformChannelSpecifics,
+        payload: payload);
+  }
+
+  void firebaseCloudMessagingListeners() {
+    _firebaseMessaging.getToken().then((token) {
+      print(token);
+    });
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        showNotification(
+            title: 'Cask',
+            time: DateTime.now(),
+            task: 'You have been assigned a new task!');
+        print('on message $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
+  }
 
   setAuthToken(TwixDB database) async {
     loggedInUser = await database.userDao.getLoggedInUser();
@@ -116,8 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => TaskScreen(
-                      action: 'My Day',
-                    ),
+                        action: 'My Day', showNotification: showNotification),
                   ),
                 );
               },
@@ -131,9 +194,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => TaskScreen(
-                      action: 'Assigned To Me',
-                      loggedInUser: loggedInUser,
-                    ),
+                        action: 'Assigned To Me',
+                        loggedInUser: loggedInUser,
+                        showNotification: showNotification),
                   ),
                 );
               },
@@ -148,9 +211,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => TaskScreen(
-                      boardId: myTasksBoardId,
-                      action: 'normal MyTasks',
-                    ),
+                        boardId: myTasksBoardId,
+                        action: 'normal MyTasks',
+                        showNotification: showNotification),
                   ),
                 );
               },
@@ -163,19 +226,18 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               database,
             ),
-            StreamBuilder (
-              stream: database.boardDao.watchAllBoards(),
-              builder: (context, snapshot) {
-                boards = snapshot.data ?? List();
-                return Visibility(
-                  visible: boards.length > 0,
-                  child: Divider(
-                    indent: 20,
-                    endIndent: 20,
-                  ),
-                );
-              }
-            ),
+            StreamBuilder(
+                stream: database.boardDao.watchAllBoards(),
+                builder: (context, snapshot) {
+                  boards = snapshot.data ?? List();
+                  return Visibility(
+                    visible: boards.length > 0,
+                    child: Divider(
+                      indent: 20,
+                      endIndent: 20,
+                    ),
+                  );
+                }),
             _buildGroupList(context, database)
           ],
         ),
