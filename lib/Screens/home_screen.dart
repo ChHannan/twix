@@ -122,8 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
       final taskId = assignedTask['task']['id'];
       final taskName = assignedTask['task']['name'];
       final taskIsDone = assignedTask['is_done'];
-      final taskDueDate = assignedTask['due_date'];
-      final taskRemindMe = assignedTask['remind_me'];
+      final taskDueDate = assignedTask['task']['due_date'];
+      final taskRemindMe = assignedTask['task']['remind_me'];
       final taskBoardId = assignedTask['task']['board']['id'];
       final taskNotes = assignedTask['task']['notes'];
       final taskExists = (await database.taskDao.getTaskById(taskId)) != null;
@@ -149,8 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
             id: Value(taskId),
             name: Value(taskName),
             isDone: Value(taskIsDone),
-            dueDate: Value(taskDueDate),
-            remindMe: Value(taskRemindMe),
+            dueDate: Value(DateTime.parse('$taskDueDate  00:00:00.000')),
+            remindMe: Value(DateTime.parse(taskRemindMe)),
             boardId: Value(taskBoardId),
             notes: Value(taskNotes),
             createdAt: Value(

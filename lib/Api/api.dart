@@ -118,17 +118,31 @@ class Api {
       DateTime remindMe,
       String boardId,
       bool isAssigned,
-      String groupId}) {
+      String groupId,
+      String notes}) {
+    print(jsonEncode({
+      'id': id,
+      'name': name,
+      'is_done': isDone,
+      'due_date': dueDate.toString(),
+      'remind_me': remindMe.toString(),
+      'board_id': boardId,
+      'is_assigned': isAssigned,
+      'group_id': groupId,
+      'notes': notes
+    }));
     return post(_taskView,
         body: jsonEncode({
           'id': id,
           'name': name,
           'is_done': isDone,
-          'due_date': dueDate,
-          'remind_me': remindMe,
+          'due_date':
+              dueDate == null ? dueDate : dueDate.toString().split(' ')[0],
+          'remind_me': remindMe == null ? remindMe : remindMe.toString(),
           'board_id': boardId,
           'is_assigned': isAssigned,
-          'group_id': groupId
+          'group_id': groupId,
+          'notes': notes
         }),
         headers: {
           HttpHeaders.authorizationHeader: _authToken,
