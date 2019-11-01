@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:twix/Database/database.dart';
 
-import 'package:twix/Widgets/task_details.dart';
+import 'package:twix/Widgets/task_components.dart';
 
 class TaskAdderSheet extends StatefulWidget {
   final String boardId;
@@ -117,14 +117,14 @@ class _TaskAdderSheetState extends State<TaskAdderSheet> {
               height: 51,
               child: Row(
                 children: <Widget>[
-                  TaskDetails(
+                  TaskComponents(
                     iconData: Icons.calendar_today,
                     text: dueDate == null
                         ? 'Set due date'
                         : DateFormat.yMMMEd().format(dueDate).toString(),
                     callBack: selectDueDate,
                   ),
-                  TaskDetails(
+                  TaskComponents(
                     iconData: FontAwesomeIcons.bell,
                     text: remindMeDateTime == null
                         ? 'Remind Me'

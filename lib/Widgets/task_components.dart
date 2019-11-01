@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class TaskDetails extends StatelessWidget {
+class TaskComponents extends StatelessWidget {
   final IconData iconData;
   final String text;
   final Function callBack;
-  TaskDetails({this.iconData, this.text, this.callBack});
+  TaskComponents({this.iconData, this.text, this.callBack});
 
   @override
   Widget build(BuildContext context) {

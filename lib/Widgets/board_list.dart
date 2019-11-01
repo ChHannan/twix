@@ -7,12 +7,13 @@ class BoardsList extends StatelessWidget {
   final Function callBack;
   final String remainingTasks;
 
-  BoardsList(
-      {this.iconData,
-      this.title,
-      this.color,
-      this.callBack,
-      this.remainingTasks = ''});
+  BoardsList({
+    this.iconData,
+    this.title,
+    this.color,
+    this.callBack,
+    this.remainingTasks = '',
+  });
 
   @override
   Widget build(BuildContext context) {

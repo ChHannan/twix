@@ -15,8 +15,12 @@ class TaskCard extends StatefulWidget {
   final AssignedTaskWithUser assignedTask;
   final Function showNotification;
 
-  const TaskCard({Key key, this.task, this.assignedTask, this.showNotification})
-      : super(key: key);
+  const TaskCard({
+    Key key,
+    this.task,
+    this.assignedTask,
+    this.showNotification,
+  }) : super(key: key);
 
   @override
   _TaskCardState createState() => _TaskCardState();
@@ -47,27 +51,33 @@ class _TaskCardState extends State<TaskCard>
       color: Colors.white,
       child: ListTile(
         leading: Container(
-            child: task.isDone
-                ? IconButton(
-                    onPressed: null,
-                    icon: Icon(
-                      Icons.check_circle_outline,
-                      color: Colors.green,
-                    ))
-                : IconButton(
-                    onPressed: () {
-                      database.taskDao.updateTask(task.copyWith(isDone: true));
-                      setState(() {});
-                    },
-                    icon: Icon(
-                      FontAwesomeIcons.circle,
-                    ))),
-        title: Text(task.name,
-            style: task.isDone
-                ? TextStyle(decoration: TextDecoration.lineThrough)
-                : null),
-        subtitle:
-            Text(isAssignedToMe ? 'Assigned Task' : widget.task.board.name),
+          child: task.isDone
+              ? IconButton(
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.green,
+                  ),
+                )
+              : IconButton(
+                  onPressed: () {
+                    database.taskDao.updateTask(task.copyWith(isDone: true));
+                    setState(() {});
+                  },
+                  icon: Icon(
+                    FontAwesomeIcons.circle,
+                  ),
+                ),
+        ),
+        title: Text(
+          task.name,
+          style: task.isDone
+              ? TextStyle(decoration: TextDecoration.lineThrough)
+              : null,
+        ),
+        subtitle: Text(
+          isAssignedToMe ? 'Assigned Task' : widget.task.board.name,
+        ),
         dense: true,
         trailing: database.taskDao.isMyDay(task.myDayDate)
             ? IconButton(
@@ -76,9 +86,11 @@ class _TaskCardState extends State<TaskCard>
                   color: Colors.orange,
                 ),
                 onPressed: () {
-                  database.taskDao.updateTask(task
-                      .createCompanion(false)
-                      .copyWith(myDayDate: Value(null)));
+                  database.taskDao.updateTask(
+                    task.createCompanion(false).copyWith(
+                          myDayDate: Value(null),
+                        ),
+                  );
                   setState(() {});
                 },
               )
@@ -87,7 +99,11 @@ class _TaskCardState extends State<TaskCard>
                 onPressed: () {
                   var today = DateTime.now();
                   today = DateTime(today.year, today.month, today.day);
-                  database.taskDao.updateTask(task.copyWith(myDayDate: today));
+                  database.taskDao.updateTask(
+                    task.copyWith(
+                      myDayDate: today,
+                    ),
+                  );
                   setState(() {});
                 },
               ),
@@ -96,9 +112,10 @@ class _TaskCardState extends State<TaskCard>
             context,
             MaterialPageRoute(
               builder: (context) => TaskDetailsScreen(
-                  task: widget.task,
-                  taskFallBack: widget.assignedTask?.task,
-                  showNotification: widget.showNotification),
+                task: widget.task,
+                taskFallBack: widget.assignedTask?.task,
+                showNotification: widget.showNotification,
+              ),
             ),
           );
         },

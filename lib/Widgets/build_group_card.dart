@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twix/Database/database.dart';
 import 'package:twix/Widgets/board_list.dart';
-
-import '../Screens/group_screen.dart';
+import 'package:twix/Screens/group_screen.dart';
 
 class BuildGroupCard extends StatefulWidget {
   final GroupTableData groupItem;
@@ -21,10 +20,16 @@ class _BuildGroupCardState extends State<BuildGroupCard>
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 800));
-    _animation =
-        CurvedAnimation(parent: _animationController, curve: Curves.ease);
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: 800,
+      ),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.ease,
+    );
     _animationController.forward();
   }
 

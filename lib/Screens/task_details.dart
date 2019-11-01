@@ -14,7 +14,11 @@ class TaskDetailsScreen extends StatefulWidget {
   final TaskTableData taskFallBack;
   final Function showNotification;
 
-  TaskDetailsScreen({this.task, this.taskFallBack, this.showNotification});
+  TaskDetailsScreen({
+    this.task,
+    this.taskFallBack,
+    this.showNotification,
+  });
 
   @override
   _TaskDetailsScreenState createState() => _TaskDetailsScreenState();
@@ -52,7 +56,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     final database = Provider.of<TwixDB>(context);
     return FutureBuilder(
       future: database.taskDao.getTaskById(
-          useFallBack ? widget.taskFallBack.id : widget.task.task.id),
+        useFallBack ? widget.taskFallBack.id : widget.task.task.id,
+      ),
       builder: (context, snapshot) {
         final task = snapshot.data ??
             TaskTableData(
@@ -62,10 +67,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               isSync: false,
               createdAt: DateTime.now(),
             );
-        taskController = TextEditingController.fromValue(TextEditingValue(
+        taskController = TextEditingController.fromValue(
+          TextEditingValue(
             text: task.name,
             selection: TextSelection.fromPosition(
-                TextPosition(offset: task.name.length))));
+              TextPosition(offset: task.name.length),
+            ),
+          ),
+        );
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
@@ -134,39 +143,49 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                     icon: Icon(
                                       Icons.check_circle_outline,
                                       color: Colors.green,
-                                    ))
+                                    ),
+                                  )
                                 : IconButton(
                                     onPressed: () {
                                       database.taskDao.updateTask(
-                                          useFallBack
-                                              ? widget.taskFallBack
-                                              .copyWith(isDone: true)
-                                              : widget.task.task
-                                              .copyWith(isDone: true));
+                                        useFallBack
+                                            ? widget.taskFallBack
+                                                .copyWith(isDone: true)
+                                            : widget.task.task.copyWith(
+                                                isDone: true,
+                                              ),
+                                      );
                                       setState(() {
                                         shouldDisable = true;
                                       });
                                     },
                                     icon: Icon(
                                       FontAwesomeIcons.circle,
-                                    )),
+                                    ),
+                                  ),
                             title: TextField(
                               controller: taskController,
                               decoration: InputDecoration(
-                                  border: InputBorder.none, counterText: ''),
+                                border: InputBorder.none,
+                                counterText: '',
+                              ),
                               onChanged: (value) {
                                 database.taskDao
                                     .updateTask(task.copyWith(name: value));
                               },
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w600),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             trailing: database.taskDao.isMyDay(task.myDayDate)
                                 ? Icon(
                                     Icons.star,
                                     color: Colors.orange,
                                   )
-                                : Icon(Icons.star_border),
+                                : Icon(
+                                    Icons.star_border,
+                                  ),
                           ),
                         ),
                       ),
@@ -192,15 +211,17 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                               child: Text(
                                                 'Groups',
                                                 style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                         Container(
-                                          child: _buildGroupList(database),
+                                          child: _buildGroupList(
+                                            database,
+                                          ),
                                         ),
                                       ],
                                     ),

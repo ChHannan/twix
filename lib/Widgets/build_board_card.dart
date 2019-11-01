@@ -7,7 +7,9 @@ import 'package:twix/Widgets/board_list.dart';
 class BuildBoardCard extends StatefulWidget {
   final BoardTableData boardItem;
 
-  BuildBoardCard({this.boardItem});
+  BuildBoardCard({
+    this.boardItem,
+  });
 
   @override
   _BuildBoardCardState createState() => _BuildBoardCardState();
@@ -46,20 +48,21 @@ class _BuildBoardCardState extends State<BuildBoardCard>
         builder: (context, snapshot) {
           tasks = snapshot.data ?? List();
           return BoardsList(
-              iconData: Icons.developer_board,
-              title: widget.boardItem.name,
-              color: Colors.indigo,
-              remainingTasks: tasks.length.toString(),
-              callBack: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TaskScreen(
-                      boardId: widget.boardItem.id,
-                    ),
+            iconData: Icons.developer_board,
+            title: widget.boardItem.name,
+            color: Colors.indigo,
+            remainingTasks: tasks.length.toString(),
+            callBack: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TaskScreen(
+                    boardId: widget.boardItem.id,
                   ),
-                );
-              });
+                ),
+              );
+            },
+          );
         },
       ),
     );

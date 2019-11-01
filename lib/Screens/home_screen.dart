@@ -24,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   bool isDivider = false;
   UserTableData loggedInUser;
   BoardTableData myTasksBoard;
@@ -94,19 +93,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   setAuthToken(TwixDB database) async {
     loggedInUser = await database.userDao.getLoggedInUser();
-    Api.setAuthToken(loggedInUser.token,);
+    Api.setAuthToken(
+      loggedInUser.token,
+    );
 
     myTasksBoard = await database.boardDao.getMyTasksBoard();
     await Api.createBoard(
-        id: myTasksBoard.id,
-        name: 'My Tasks',
-        isPersonal: true,
-        userId: loggedInUser.id,);
+      id: myTasksBoard.id,
+      name: 'My Tasks',
+      isPersonal: true,
+      userId: loggedInUser.id,
+    );
   }
 
   populateAssignedToMe(TwixDB database) async {
     var response = await Api.viewAssignedTask();
-    var assignedTasks = jsonDecode(response.body,);
+    var assignedTasks = jsonDecode(
+      response.body,
+    );
     for (var assignedTask in assignedTasks) {
       final String id = assignedTask['id'];
       final bool isDone = assignedTask['is_done'];
@@ -125,11 +129,23 @@ class _HomeScreenState extends State<HomeScreen> {
       final taskExists = (await database.taskDao.getTaskById(taskId)) != null;
 
       if (userId != loggedInUser.id)
-        await database.userDao.insertUser(UserTableCompanion(
-            id: Value(userId,), name: Value(userName,), email: Value(userEmail,),),);
+        await database.userDao.insertUser(
+          UserTableCompanion(
+            id: Value(
+              userId,
+            ),
+            name: Value(
+              userName,
+            ),
+            email: Value(
+              userEmail,
+            ),
+          ),
+        );
 
       if (!taskExists) {
-        await database.taskDao.insertTask(TaskTableCompanion(
+        await database.taskDao.insertTask(
+          TaskTableCompanion(
             id: Value(taskId),
             name: Value(taskName),
             isDone: Value(taskIsDone),
@@ -137,7 +153,11 @@ class _HomeScreenState extends State<HomeScreen> {
             remindMe: Value(taskRemindMe),
             boardId: Value(taskBoardId),
             notes: Value(taskNotes),
-            createdAt: Value(DateTime.now(),),),);
+            createdAt: Value(
+              DateTime.now(),
+            ),
+          ),
+        );
 
         await database.assignedTaskDao.insertAssignedTask(
             AssignedTaskTableCompanion(
@@ -227,17 +247,18 @@ class _HomeScreenState extends State<HomeScreen> {
               database,
             ),
             StreamBuilder(
-                stream: database.boardDao.watchAllBoards(),
-                builder: (context, snapshot) {
-                  boards = snapshot.data ?? List();
-                  return Visibility(
-                    visible: boards.length > 0,
-                    child: Divider(
-                      indent: 20,
-                      endIndent: 20,
-                    ),
-                  );
-                }),
+              stream: database.boardDao.watchAllBoards(),
+              builder: (context, snapshot) {
+                boards = snapshot.data ?? List();
+                return Visibility(
+                  visible: boards.length > 0,
+                  child: Divider(
+                    indent: 20,
+                    endIndent: 20,
+                  ),
+                );
+              },
+            ),
             _buildGroupList(context, database)
           ],
         ),
@@ -272,7 +293,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
     await Api.createBoard(
-        id: id, name: boardName, userId: loggedInUser.id, isPersonal: false);
+      id: id,
+      name: boardName,
+      userId: loggedInUser.id,
+      isPersonal: false,
+    );
   }
 
   _insertGroup(String groupName, TwixDB database) async {
@@ -285,7 +310,11 @@ class _HomeScreenState extends State<HomeScreen> {
         adminId: Value(adminId),
       ),
     );
-    await Api.createGroup(id, groupName, adminId);
+    await Api.createGroup(
+      id,
+      groupName,
+      adminId,
+    );
   }
 
   StreamBuilder<List<BoardTableData>> _buildBoardList(
@@ -300,7 +329,9 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: boards.length,
           itemBuilder: (_, index) {
             final boardItem = boards[index];
-            return BuildBoardCard(boardItem: boardItem);
+            return BuildBoardCard(
+              boardItem: boardItem,
+            );
           },
         );
       },
@@ -319,7 +350,9 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: groups.length,
           itemBuilder: (_, index) {
             final groupItem = groups[index];
-            return BuildGroupCard(groupItem: groupItem);
+            return BuildGroupCard(
+              groupItem: groupItem,
+            );
           },
         );
       },

@@ -136,7 +136,7 @@ class Search extends SearchDelegate<String> {
             },
             itemCount: data.length,
           );
-        });
+        },);
   }
 }
 

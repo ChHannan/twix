@@ -5,7 +5,11 @@ class OnSwipeContainer extends StatelessWidget {
   final IconData iconData;
   final Alignment alignment;
 
-  OnSwipeContainer({this.color, this.iconData, this.alignment});
+  OnSwipeContainer({
+    this.color,
+    this.iconData,
+    this.alignment,
+  });
 
   @override
   Widget build(BuildContext context) {

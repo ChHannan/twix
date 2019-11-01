@@ -11,11 +11,12 @@ class BuildTaskCard extends StatefulWidget {
   final TwixDB database;
   final Function showNotification;
 
-  BuildTaskCard(
-      {this.taskItem,
-      this.assignedTaskItem,
-      this.database,
-      this.showNotification});
+  BuildTaskCard({
+    this.taskItem,
+    this.assignedTaskItem,
+    this.database,
+    this.showNotification,
+  });
 
   @override
   _BuildTaskCardState createState() => _BuildTaskCardState();
@@ -71,10 +72,16 @@ class _BuildTaskCardState extends State<BuildTaskCard>
             if (direction == DismissDirection.startToEnd) {
               // Logic to update the task to isDone
               widget.assignedTaskItem == null
-                  ? widget.database.taskDao
-                      .updateTask(widget.taskItem.task.copyWith(isDone: true))
+                  ? widget.database.taskDao.updateTask(
+                      widget.taskItem.task.copyWith(
+                        isDone: true,
+                      ),
+                    )
                   : widget.database.taskDao.updateTask(
-                      widget.assignedTaskItem.task.copyWith(isDone: true));
+                      widget.assignedTaskItem.task.copyWith(
+                        isDone: true,
+                      ),
+                    );
 
               // Display snack bar
               Scaffold.of(context).showSnackBar(
@@ -87,8 +94,9 @@ class _BuildTaskCardState extends State<BuildTaskCard>
               // Logic to delete the task
               widget.assignedTaskItem == null
                   ? widget.database.taskDao.deleteTask(widget.taskItem.task)
-                  : widget.database.assignedTaskDao
-                      .deleteAssignedTask(widget.assignedTaskItem.assignedTask);
+                  : widget.database.assignedTaskDao.deleteAssignedTask(
+                      widget.assignedTaskItem.assignedTask,
+                    );
 
               // Display snack bar
               Scaffold.of(context).showSnackBar(
