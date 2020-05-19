@@ -4,6 +4,24 @@ The project, codenamed "Twix" with the real application label being **Cask**, is
 
 For the backend service, please visit [Twix Server](https://github.com/Diaga/Twix-Server)
 
+
+
+**Screenshots**
+
+
+![](https://github.com/ChHannan/twix/blob/master/splash.jpeg)
+
+
+
+![](https://github.com/ChHannan/twix/blob/master/tasks.jpeg)
+
+
+
+![](https://github.com/ChHannan/twix/blob/master/board.jpeg)
+
+
+
+
 ## Documentation
 
 Using Android Studio is recommended, however, you can use IntelliJ or your favorite IDE. Just use the flutter plugin!
