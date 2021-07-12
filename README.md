@@ -9,15 +9,12 @@ For the backend service, please visit [Twix Server](https://github.com/Diaga/Twi
 **Screenshots**
 
 
-![](https://github.com/ChHannan/twix/blob/master/splash.jpeg)
+<img src="https://github.com/ChHannan/twix/blob/master/splash.jpeg" width="220" height="400" />
 
+<img src="https://github.com/ChHannan/twix/blob/master/tasks.jpeg" width="220" height="400" />
 
+<img src="https://github.com/ChHannan/twix/blob/master/board.jpeg" width="220" height="400" />
 
-![](https://github.com/ChHannan/twix/blob/master/tasks.jpeg)
-
-
-
-![](https://github.com/ChHannan/twix/blob/master/board.jpeg)
 
 
 
